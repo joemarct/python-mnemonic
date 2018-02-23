@@ -47,7 +47,8 @@ def binary_search(a, x, lo=0, hi=None):                # can't use a to specify 
 class Mnemonic(object):
     def __init__(self, language):
         self.radix = 2048
-        with open('%s/%s.txt' % (self._get_directory(), language), 'rb') as f:
+        self.language = language
+        with open('%s/%s.txt' % (self._get_directory(), self.language), 'rb') as f:
             self.wordlist = [w.strip().decode('utf8') if sys.version < '3' else w.strip() for w in f.readlines()]
         if len(self.wordlist) != self.radix:
             raise ConfigurationError('Wordlist should contain %d words, but it contains %d words.' % (self.radix, len(self.wordlist)))
@@ -143,7 +144,7 @@ class Mnemonic(object):
         for i in range(len(b) // 11):
             idx = int(b[i * 11:(i + 1) * 11], 2)
             result.append(self.wordlist[idx])
-        if self.detect_language(' '.join(result)) == 'japanese':  # Japanese must be joined by ideographic space.
+        if self.language == 'japanese':  # Japanese must be joined by ideographic space.
             result_phrase = u'\u3000'.join(result)
         else:
             result_phrase = ' '.join(result)
